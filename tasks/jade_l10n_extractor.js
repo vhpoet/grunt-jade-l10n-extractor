@@ -33,20 +33,34 @@ module.exports = function(grunt)
     function processBlock(block)
     {
       block.nodes.forEach(function (node) {
-        node.attrs && node.attrs.forEach(function (attr) {
+        if(node.attrs) {
           var text = parseText(node);
-          if (attr.name === "l10n") {
-            messages.push({
-              file: filename,
-              line: node.line,
-              msgid: ("string" === typeof attr.val)
-                  ? (attr.escaped ? JSON.parse(attr.val) : attr.val)
-                // Replace &#32; with space and trim
-                  : text.replace(/&#32;/g,' ').replace(/^\s+|\s+$/gm, ''),
-              msgstr: text.replace(/&#32;/g,' ').replace(/^\s+|\s+$/gm, '')
-            });
-          }
-        });
+          node.attrs.forEach(function (attr) {
+            if (attr.name === "l10n") {
+              messages.push({
+                file: filename,
+                line: node.line,
+                msgid: ("string" === typeof attr.val)
+                    ? (attr.escaped ? JSON.parse(attr.val) : attr.val)
+                  // Replace &#32; with space and trim
+                    : text.replace(/&#32;/g,' ').replace(/^\s+|\s+$/gm, ''),
+                msgstr: text.replace(/&#32;/g,' ').replace(/^\s+|\s+$/gm, '')
+              });
+            }
+            else {
+              var translatableTag = /l10n-([-a-zA-Z0-9]*)/g.exec(attr.name);
+
+              if (translatableTag && translatableTag[1] !== 'inc') {
+                messages.push({
+                  file: filename,
+                  line: node.line,
+                  msgid: attr.escaped ? JSON.parse(attr.val) : attr.val,
+                  msgstr: attr.escaped ? JSON.parse(attr.val) : attr.val
+                });
+              }
+            }
+          });
+        }
 
         node.block && processBlock(node.block);
       });
