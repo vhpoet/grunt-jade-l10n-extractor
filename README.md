@@ -87,3 +87,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 _(Nothing yet)_
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vhpoet/grunt-jade-l10n-extractor/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
